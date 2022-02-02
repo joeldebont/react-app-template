@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import Navigation from './android/src/navigation';
+import Navigation from './src/navigation';
 
 
 const App = () => {
