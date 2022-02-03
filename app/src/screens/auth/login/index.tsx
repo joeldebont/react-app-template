@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Text } from "react-native";
 import { Button, Headline, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

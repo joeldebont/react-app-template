@@ -1,35 +1,45 @@
 import React, { FC } from 'react';
 import * as Keychain from 'react-native-keychain';
+import messaging from '@react-native-firebase/messaging';
 
 export interface Session {
-    token: string;
+    token: string | null;
+    firebaseToken: string | null;
 }
 
 export interface SessionContextValue {
-    session?: Session;
+    session: Session | null;
     setSession: (sessionModel: SetSessionModel) => Promise<Session>;
     clearSession: () => void;
     initializeSession: () => Promise<void>;
 }
 
 export interface SessionModel {
-    token: string;
+    token: string | null;
+    firebaseToken: string | null;
 }
 
 export interface SetSessionModel {
-    token: string;
+    token: string | null;
+    firebaseToken: string | null;
+}
+
+export const initialSession: SessionModel = {
+    token: null,
+    firebaseToken: null
 }
 
 function convertToSession(setSessionModel: SetSessionModel) {
     const newSession: Session = {
-        token: setSessionModel.token
+        token: setSessionModel.token,
+        firebaseToken: setSessionModel.firebaseToken
     };
 
     return newSession;
 }
 
 const SessionContext = React.createContext<SessionContextValue>({
-    session: undefined,
+    session: null,
     setSession: async (sessionModel: SetSessionModel) => {
         const session = convertToSession(sessionModel);
 
@@ -45,7 +55,7 @@ interface SessionProviderProps {
 }
 
 export const SessionProvider: FC<SessionProviderProps> = (props) => {
-    const [session, setSession] = React.useState<Session>();
+    const [session, setSession] = React.useState<Session | null>(null);
 
     const updateSession = React.useCallback(async (sessionModel: SetSessionModel) => {
         const newSession = convertToSession(sessionModel);
@@ -57,7 +67,7 @@ export const SessionProvider: FC<SessionProviderProps> = (props) => {
     }, [setSession]);
 
     const clearSession = React.useCallback(async () => {
-        setSession(undefined);
+        setSession(null);
         await Keychain.resetGenericPassword();
     }, [setSession]);
 
@@ -71,15 +81,19 @@ export const SessionProvider: FC<SessionProviderProps> = (props) => {
         const session = JSON.parse(sessionJson.password) as SessionModel;
 
         await updateSession({
-            token: session.token
+            token: session.token,
+            firebaseToken: session.firebaseToken
         });
     }, []);
 
-    // messaging().onTokenRefresh(token => {
-    //     (async () => {
-    //         await setFirebaseDeviceToken(token);
-    //     })();
-    // });
+    messaging().onTokenRefresh(token => {
+        (async () => {
+            var newSession: SessionModel = session ?? { token: null, firebaseToken: null }
+            newSession.firebaseToken = token;
+
+            updateSession(newSession);
+        })();
+    });
 
     const context: SessionContextValue = React.useMemo(() => ({
         session,

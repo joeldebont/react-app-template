@@ -1,9 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
+import useAuth from './src/hooks/auth';
 import Navigation from './src/navigation';
 
 
 const App = () => {
+  const { firebaseInit } = useAuth();
+
+  useEffect(() => {
+    firebaseInit();
+  }, []);
 
   return (
     <NavigationContainer>

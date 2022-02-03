@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "template",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,6 +10,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-firebase/analytics": "^14.3.0",
+    "@react-native-firebase/app": "^14.3.0",
+    "@react-native-firebase/messaging": "^14.3.0",
     "@react-navigation/drawer": "^6.3.0",
     "@react-navigation/native": "6.0.7",
     "@react-navigation/native-stack": "6.3.0",
