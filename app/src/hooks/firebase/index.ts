@@ -1,7 +1,7 @@
 import messaging from '@react-native-firebase/messaging';
 import { initialSession, useSession } from '../../contexts/sessioncontext';
 
-const useAuth = () => {
+const useFirebase = () => {
     const { session, setSession } = useSession();
 
     const firebaseInit = async () => {
@@ -23,7 +23,7 @@ const useAuth = () => {
         }
 
         const token = await messaging().getToken();
-        console.log('firebasetoken', token);
+
         var newSession = session ?? initialSession;
         newSession.firebaseToken = token;
         await setSession(newSession);
@@ -34,4 +34,4 @@ const useAuth = () => {
     };
 };
 
-export default useAuth;
+export default useFirebase;
